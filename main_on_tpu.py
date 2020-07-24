@@ -35,9 +35,8 @@ MODEL_MAP = {
 }
 
 
-def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_size):
+def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_size, tpu_address):
     run_dir = MODEL_MAP[model_name]
-    tpu_address = "grpc://10.48.40.74:8470"
     if model_type == "albert":
         config_file = f"gs://squad_cx/albert_data/pretrain_models/{model_name}/albert_config.json"
         output_dir = f"results/{model_name}"
@@ -241,7 +240,9 @@ def main():
 
     # Required parameters
     parser.add_argument('--input-file', required=True, help="eval file")
+    parser.add_argument('--tpu-address', required=True, help="eval file")
     args = parser.parse_args()
+    tpu_address = args.tpu_address
 
     xargs = f"gsutil cp {args.input_file} gs://squad_cx/albert_data/inputs/dev.json"
     os.system(xargs)
@@ -251,51 +252,58 @@ def main():
 
     predict_batch_size = 32
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/1_electra_large_32_480_5e-05_2_1",
-                 "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size)
+                 "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_384_5e-05_2_2",
-                 "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size)
+                 "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_480_5e-05_2_2",
-                 "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size)
+                 "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_1", "atrlp_models_1", "electra", 512,
-                 predict_batch_size)
+                 predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_9", "atrlp_models_9", "electra", 512,
-                 predict_batch_size)
+                 predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3.0000000000000004e-05_2_3",
-                 "lr_epoch_models_3.0000000000000004e-05_2_3", "electra", 512, predict_batch_size)
+                 "lr_epoch_models_3.0000000000000004e-05_2_3", "electra", 512, predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/6e-05_2_1", "lr_epoch_models_6e-05_2_1", "electra", 512,
-                 predict_batch_size)
+                 predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/6e-05_3_1", "lr_epoch_models_6e-05_3_1", "electra", 512,
-                 predict_batch_size)
+                 predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v1_32_384_2e-05_2_0",
-                 "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+                 "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+                 tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
-                 "albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+                 "albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+                 tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xlarge_v2_32_384_2e-05_2_0",
-                 "albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+                 "albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+                 tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xxlarge_v1_32_384_2e-05_2_0",
-                 "albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+                 "albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+                 tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
-                 "albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+                 "albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+                 tpu_address)
 
     stage1_qa_bagging(args.input_file)
     build_pv_data(args.input_file)
 
     eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/1_albert_xlarge_v1_32_384_2e-05_2_0",
                  "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
-                 predict_batch_size)
+                 predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
                  "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-                 predict_batch_size)
+                 predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
                  "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-                 predict_batch_size)
+                 predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_electra_large_24_480_3e-05_2_0",
-                 "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size)
+                 "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size,
+                 tpu_address)
 
     stage2_answer_verifier_step_one(args.input_file)
 
     eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
-                 "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size)
+                 "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
+                 tpu_address)
 
     stage2_answer_verifier_step_two(args.input_file)
 
