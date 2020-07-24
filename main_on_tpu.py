@@ -299,7 +299,7 @@ def main():
 
     stage2_answer_verifier_step_two(args.input_file)
 
-    xargs = f"gsutil -m cp -r results gs;//squad_cx"
+    xargs = f"gsutil -m cp -r results gs://squad_cx"
     os.system(xargs)
 
 
