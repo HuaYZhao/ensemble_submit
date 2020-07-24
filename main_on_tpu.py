@@ -37,7 +37,7 @@ MODEL_MAP = {
 
 def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_size):
     run_dir = MODEL_MAP[model_name]
-    tpu_address = "grpc://10.104.182.106:8470"
+    tpu_address = "grpc://10.48.40.74:8470"
     if model_type == "albert":
         config_file = f"gs://squad_cx/albert_data/pretrain_models/{model_name}/albert_config.json"
         output_dir = f"results/{model_name}"
