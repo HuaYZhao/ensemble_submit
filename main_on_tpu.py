@@ -258,15 +258,16 @@ def main():
     os.system(xargs)
 
     predict_batch_size = 32
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/1_electra_large_32_480_5e-05_2_1",
-    #              "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size, tpu_address)
+    # "gs://squad_cx/my_ensemble_models/qa_models/1_electra_large_32_480_5e-05_2_1"
+    eval_a_model("gs://squad_cx/args_train_models/1_electra_large_32_480_5e-05_2_1",
+                 "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size, tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_384_5e-05_2_2",
     #              "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size, tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_480_5e-05_2_2",
     #              "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size, tpu_address)
     # "gs://squad_cx/my_ensemble_models/qa_models/squad_model_1"
-    eval_a_model("gs://squad_cx/electra_data/models/finetuning_models_atrlp/squad_model_1", "atrlp_models_1", "electra", 512,
-                 predict_batch_size, tpu_address)
+    # eval_a_model("gs://squad_cx/electra_data/models/finetuning_models_atrlp/squad_model_1", "atrlp_models_1", "electra", 512,
+    #              predict_batch_size, tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_9", "atrlp_models_9", "electra", 512,
     #              predict_batch_size, tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3.0000000000000004e-05_2_3",
