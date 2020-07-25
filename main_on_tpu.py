@@ -56,7 +56,6 @@ def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_s
                     python3 run_squad_v2.py \
                       --albert_config_file={config_file} \
                       --output_dir={output_dir} \
-                      --train_file={predict_file} \
                       --predict_file={predict_file} \
                       --predict_feature_file={predict_feature_file} \
                       --predict_feature_left_file={predict_feature_left_file} \
