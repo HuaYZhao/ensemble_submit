@@ -264,7 +264,8 @@ def main():
     #              "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size, tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_480_5e-05_2_2",
     #              "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size, tpu_address)
-    eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_1", "atrlp_models_1", "electra", 512,
+    # "gs://squad_cx/my_ensemble_models/qa_models/squad_model_1"
+    eval_a_model("gs://squad_cx/all_ensembles_models/finetuning_models_atrlp/squad_model_1", "atrlp_models_1", "electra", 512,
                  predict_batch_size, tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_9", "atrlp_models_9", "electra", 512,
     #              predict_batch_size, tpu_address)
