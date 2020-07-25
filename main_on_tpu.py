@@ -38,6 +38,9 @@ MODEL_MAP = {
 def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_size, tpu_address):
     run_dir = MODEL_MAP[model_name]
     if model_type == "albert":
+        xargs = f"gsutil -m cp -r {model_dir} gs://squad_cx/albert_data/pretrain_models/{model_name}"
+        os.system(xargs)
+
         config_file = f"gs://squad_cx/albert_data/pretrain_models/{model_name}/albert_config.json"
         output_dir = f"results/{model_name}"
         predict_file = f"gs://squad_cx/albert_data/inputs/dev.json"
@@ -243,6 +246,8 @@ def main():
     parser.add_argument('--tpu-address', required=True, help="eval file")
     args = parser.parse_args()
     tpu_address = args.tpu_address
+
+    os.makedirs("results")
 
     xargs = f"gsutil cp {args.input_file} gs://squad_cx/albert_data/inputs/dev.json"
     os.system(xargs)
