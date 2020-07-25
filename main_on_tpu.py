@@ -265,8 +265,8 @@ def main():
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_480_5e-05_2_2",
     #              "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size, tpu_address)
     # "gs://squad_cx/my_ensemble_models/qa_models/squad_model_1"
-    eval_a_model("gs://squad_cx/electra_data/models/finetuning_models_atrlp/squad_model_1", "atrlp_models_1", "electra", 512,
-                 predict_batch_size, tpu_address)
+    # eval_a_model("gs://squad_cx/electra_data/models/finetuning_models_atrlp/squad_model_1", "atrlp_models_1", "electra", 512,
+    #              predict_batch_size, tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_9", "atrlp_models_9", "electra", 512,
     #              predict_batch_size, tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3.0000000000000004e-05_2_3",
@@ -275,9 +275,10 @@ def main():
     #              predict_batch_size, tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/6e-05_3_1", "lr_epoch_models_6e-05_3_1", "electra", 512,
     #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
+    # "gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v1_32_384_2e-05_2_0"
+    eval_a_model("gs://squad_cx/all_ensemble_models/albert_args_train_models/2_albert_xxlarge_v1_32_384_2e-05_2_0",
+                 "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+                 tpu_address)
     # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
     #              "albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
     #              tpu_address)
