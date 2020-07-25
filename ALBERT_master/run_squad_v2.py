@@ -405,9 +405,6 @@ def main(_):
                         end_top_index=end_top_index,
                         cls_logits=cls_logits))
 
-            import dill
-            dill.dump(all_results, open('all_results.pkl', 'wb'))
-
             output_prediction_file = os.path.join(
                 FLAGS.output_dir, "predictions.json")
             output_nbest_file = os.path.join(
