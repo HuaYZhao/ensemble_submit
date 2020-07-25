@@ -49,7 +49,7 @@ def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_s
         predict_feature_left_file = f"gs://squad_cx/albert_data/features/predict_features_left_{max_seq_len}_128_64"
         init_checkpoint = f"gs://squad_cx/albert_data/pretrain_models/{model_name}/model.ckpt-best"
         spm_model_file = f"gs://squad_cx/albert_data/pretrain_models/{model_name}/30k-clean.model"
-        xargs = f"gsutil cp {spm_model_file} ./"
+        xargs = f"gsutil cp {spm_model_file} {run_dir}"
         os.system(xargs)
 
         xargs = f""" cd {run_dir} && \
