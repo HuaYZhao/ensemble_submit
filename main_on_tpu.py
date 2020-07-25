@@ -43,6 +43,7 @@ def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_s
 
         config_file = f"gs://squad_cx/albert_data/pretrain_models/{model_name}/albert_config.json"
         output_dir = f"results/{model_name}"
+        os.makedirs(output_dir)
         predict_file = f"gs://squad_cx/albert_data/inputs/dev.json"
         predict_feature_file = f"gs://squad_cx/albert_data/features/predict_features_{max_seq_len}_128_64"
         predict_feature_left_file = f"gs://squad_cx/albert_data/features/predict_features_left_{max_seq_len}_128_64"
@@ -83,6 +84,7 @@ def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_s
         xargs = f"""cd {run_dir} && python run_finetuning.py   --data-dir=gs://squad_cx/electra_data --model-name={model_name}   --hparams '{{"model_size": "large", "task_names": ["squad"], "num_train_epochs": 2, "use_tpu": true, "num_tpu_cores": 8, "tpu_name": "{tpu_address}", "train_batch_size": 32, "eval_batch_size": {predict_batch_size}, "predict_batch_size": {predict_batch_size}, "max_seq_length": {max_seq_len}, "use_tfrecords_if_existing": false, "num_trials": 1, "do_train": false, "do_eval": true, "save_checkpoints_steps": 100000 }}' """
         os.system(xargs)
 
+        os.makedirs(f"./results/{model_name}")
         xargs = f"gsutil -m cp -r gs://squad_cx/electra_data/models/{model_name}/results/squad_qa ./results/{model_name}"
         os.system(xargs)
     else:
