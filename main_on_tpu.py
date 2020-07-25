@@ -314,8 +314,8 @@ def main():
     #
     # stage2_answer_verifier_step_two(args.input_file)
     #
-    xargs = f"gsutil -m cp -r results gs://squad_cx"
-    os.system(xargs)
+    # xargs = f"gsutil -m cp -r results gs://squad_cx"
+    # os.system(xargs)
 
 
 if __name__ == '__main__':
