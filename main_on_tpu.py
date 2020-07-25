@@ -85,7 +85,7 @@ def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_s
         os.system(xargs)
 
         os.makedirs(f"./results/{model_name}", exist_ok=True)
-        xargs = f"gsutil -m cp -r gs://squad_cx/electra_data/models/{model_name}/results/squad_qa ./results/{model_name}"
+        xargs = f"gsutil -m cp -r gs://squad_cx/electra_data/models/{model_name}/results/squad_qa/* ./results/{model_name}"
         os.system(xargs)
     else:
         raise
