@@ -41,7 +41,7 @@ def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_s
         xargs = f"gsutil -m cp -r {model_dir} gs://squad_cx/albert_data/pretrain_models/{model_name}"
         os.system(xargs)
 
-        config_file = "../xlarge_albert_config.json" if "xlarge" in model_name else "../xxlarge_albert_config.json"
+        config_file = "../xxlarge_albert_config.json" if "xxlarge" in model_name else "../xlarge_albert_config.json"
         output_dir = f"results/{model_name}"
         os.makedirs(output_dir, exist_ok=True)
         predict_file = f"gs://squad_cx/albert_data/inputs/dev.json"
