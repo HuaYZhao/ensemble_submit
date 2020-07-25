@@ -534,8 +534,7 @@ def main(_):
         #                     tf.gfile.Remove(src_ckpt)
         #             writer.write("=" * 50 + "\n")
 
-        checkpoint_path = os.path.join(FLAGS.init_checkpoint, "model.ckpt-best")
-        result, global_step = get_result(checkpoint_path)
+        result, global_step = get_result(FLAGS.init_checkpoint)
         # tf.logging.info("***** Final Eval results *****")
         # for key in sorted(result.keys()):
         #     tf.logging.info("  %s = %s", key, str(result[key]))
