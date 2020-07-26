@@ -99,7 +99,7 @@ def remove_sub_model_dir(path):
 
 def stage1_qa_bagging(input_file):
     results_dir = "results"
-    models = seq(os.listdir(results_dir)).filter(lambda x: os.path.isdir(x)).list()
+    models = seq(os.listdir(results_dir)).filter(lambda x: os.path.isdir(os.path.join(results_dir, x))).list()
     assert len(models) == 13
     all_nbest = []
     all_odds = []
@@ -158,7 +158,7 @@ def build_pv_data(input_file):
 
 def stage2_answer_verifier_step_one(input_file):
     results_dir = "results"
-    models = seq(os.listdir(results_dir)).filter(lambda x: os.path.isdir(x)).list()
+    models = seq(os.listdir(results_dir)).filter(lambda x: os.path.isdir(os.path.join(results_dir, x))).list()
     assert len(models) == 4
     all_odds = []
     for dire in [os.path.join(results_dir, d) for d in models]:
@@ -201,7 +201,7 @@ def stage2_answer_verifier_step_one(input_file):
 
 def stage2_answer_verifier_step_two(input_file):
     results_dir = "results"
-    models = seq(os.listdir(results_dir)).filter(lambda x: os.path.isdir(x)).list()
+    models = seq(os.listdir(results_dir)).filter(lambda x: os.path.isdir(os.path.join(results_dir, x))).list()
     assert len(models) == 1
     all_odds = []
     for dire in [os.path.join(results_dir, d) for d in models]:
