@@ -93,7 +93,7 @@ def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_s
 
 def remove_sub_model_dir(path):
     for sub_dir in os.listdir(path):
-        if os.path.isdir(sub_dir):
+        if os.path.isdir(os.path.join(path, sub_dir)):
             shutil.rmtree(os.path.join(path, sub_dir))
 
 
