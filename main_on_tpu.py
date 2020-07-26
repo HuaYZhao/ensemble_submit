@@ -309,7 +309,7 @@ def main():
     #              "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size,
     #              tpu_address)
 
-    stage2_answer_verifier_step_one(args.input_file)
+    # stage2_answer_verifier_step_one(args.input_file)
 
     eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
                  "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
