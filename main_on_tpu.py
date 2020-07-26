@@ -188,9 +188,9 @@ def stage2_answer_verifier_step_one(input_file):
 
     remove_sub_model_dir(results_dir)
 
-    output_bagging_preds_file = os.path.join(results_dir, "stage2_verifier_bagging_preds.json")
-    output_bagging_odds_file = os.path.join(results_dir, "stage2_verifier_bagging_odds.json")
-    output_bagging_eval_file = os.path.join(results_dir, "stage2_verifier_bagging_eval.json")
+    output_bagging_preds_file = os.path.join(results_dir, "stage2_step_one_bagging_preds.json")
+    output_bagging_odds_file = os.path.join(results_dir, "stage2_step_one_bagging_odds.json")
+    output_bagging_eval_file = os.path.join(results_dir, "stage2_step_one_bagging_eval.json")
 
     json.dump(bagging_preds, open(output_bagging_preds_file, 'w', encoding='utf-8'))
     json.dump(bagging_odds, open(output_bagging_odds_file, 'w', encoding='utf-8'))
@@ -211,9 +211,9 @@ def stage2_answer_verifier_step_two(input_file):
         else:
             all_odds.append(json.load(
                 open(os.path.join(dire, 'squad_null_odds.json'), 'r', encoding='utf-8')))
-    stage2_step_one_bagging_preds_file = os.path.join(results_dir, "stage2_verifier_bagging_preds.json")
-    stage2_step_one_bagging_odds_file = os.path.join(results_dir, "stage2_verifier_bagging_odds.json")
-    stage2_step_one_bagging_eval_file = os.path.join(results_dir, "stage2_verifier_bagging_eval.json")
+    stage2_step_one_bagging_preds_file = os.path.join(results_dir, "stage2_step_one_bagging_preds.json")
+    stage2_step_one_bagging_odds_file = os.path.join(results_dir, "stage2_step_one_bagging_odds.json")
+    stage2_step_one_bagging_eval_file = os.path.join(results_dir, "stage2_step_one_bagging_eval.json")
 
     stage2_step_one_bagging_preds = json.load(open(stage2_step_one_bagging_preds_file, 'r', encoding='utf-8'))
     stage2_step_one_bagging_odds = json.load(open(stage2_step_one_bagging_odds_file, 'r', encoding='utf-8'))
@@ -230,11 +230,11 @@ def stage2_answer_verifier_step_two(input_file):
         if bagging_odds[qid] > 7.326700687408447:
             bagging_preds[qid] = ""
 
-    remove_sub_model_dir(results_dir)
+    # remove_sub_model_dir(results_dir)
 
-    output_bagging_preds_file = os.path.join(results_dir, "stage2_verifier_bagging_preds.json")
-    output_bagging_odds_file = os.path.join(results_dir, "stage2_verifier_bagging_odds.json")
-    output_bagging_eval_file = os.path.join(results_dir, "stage2_verifier_bagging_eval.json")
+    output_bagging_preds_file = os.path.join(results_dir, "stage2_step_two_bagging_preds.json")
+    output_bagging_odds_file = os.path.join(results_dir, "stage2_step_two_bagging_odds.json")
+    output_bagging_eval_file = os.path.join(results_dir, "stage2_step_two_bagging_eval.json")
 
     json.dump(bagging_preds, open(output_bagging_preds_file, 'w', encoding='utf-8'))
     json.dump(bagging_odds, open(output_bagging_odds_file, 'w', encoding='utf-8'))
@@ -295,21 +295,21 @@ def main():
     #
     # stage1_qa_bagging(args.input_file)
     build_pv_data(args.input_file)
-    #
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/1_albert_xlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_electra_large_24_480_3e-05_2_0",
-    #              "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size,
-    #              tpu_address)
 
-    # stage2_answer_verifier_step_one(args.input_file)
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/1_albert_xlarge_v1_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size, tpu_address)
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size, tpu_address)
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size, tpu_address)
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_electra_large_24_480_3e-05_2_0",
+                 "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size,
+                 tpu_address)
+
+    stage2_answer_verifier_step_one(args.input_file)
 
     eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
                  "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
