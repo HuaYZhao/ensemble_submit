@@ -91,9 +91,15 @@ def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_s
         raise
 
 
+def remove_sub_model_dir(path):
+    for sub_dir in os.listdir(path):
+        if os.path.isdir(sub_dir):
+            shutil.rmtree(os.path.join(path, sub_dir))
+
+
 def stage1_qa_bagging(input_file):
     results_dir = "results"
-    models = os.listdir(results_dir)
+    models = seq(os.listdir(results_dir)).filter(lambda x: os.path.isdir(x)).list()
     assert len(models) == 13
     all_nbest = []
     all_odds = []
@@ -113,8 +119,7 @@ def stage1_qa_bagging(input_file):
                               ).list()[-1]['text']
         bagging_odds[qid] = np.mean([odds[qid] for odds in all_odds])
 
-    # shutil.rmtree(results_dir)
-    # os.makedirs(results_dir, exist_ok=True)
+    remove_sub_model_dir(results_dir)
 
     output_bagging_preds_file = os.path.join(results_dir, "stage1_qa_bagging_preds.json")
     output_bagging_odds_file = os.path.join(results_dir, "stage1_qa_bagging_odds.json")
@@ -149,13 +154,11 @@ def build_pv_data(input_file):
     os.system(xargs)
 
     print("update electra pv data !")
-    shutil.rmtree(results_dir)
-    os.makedirs(results_dir, exist_ok=True)
 
 
 def stage2_answer_verifier_step_one(input_file):
     results_dir = "results"
-    models = os.listdir(results_dir)
+    models = seq(os.listdir(results_dir)).filter(lambda x: os.path.isdir(x)).list()
     assert len(models) == 4
     all_odds = []
     for dire in [os.path.join(results_dir, d) for d in models]:
@@ -183,8 +186,7 @@ def stage2_answer_verifier_step_one(input_file):
             bagging_preds[qid] = ""
         bagging_odds[qid] = np.mean([odds[qid] for odds in all_odds])
 
-    shutil.rmtree(results_dir)
-    os.makedirs(results_dir, exist_ok=True)
+    remove_sub_model_dir(results_dir)
 
     output_bagging_preds_file = os.path.join(results_dir, "stage2_verifier_bagging_preds.json")
     output_bagging_odds_file = os.path.join(results_dir, "stage2_verifier_bagging_odds.json")
@@ -199,7 +201,7 @@ def stage2_answer_verifier_step_one(input_file):
 
 def stage2_answer_verifier_step_two(input_file):
     results_dir = "results"
-    models = os.listdir(results_dir)
+    models = seq(os.listdir(results_dir)).filter(lambda x: os.path.isdir(x)).list()
     assert len(models) == 1
     all_odds = []
     for dire in [os.path.join(results_dir, d) for d in models]:
@@ -226,8 +228,7 @@ def stage2_answer_verifier_step_two(input_file):
             bagging_preds[qid] = ""
         bagging_odds[qid] = np.mean([odds[qid] for odds in all_odds])
 
-    shutil.rmtree(results_dir)
-    os.makedirs(results_dir, exist_ok=True)
+    remove_sub_model_dir(results_dir)
 
     output_bagging_preds_file = os.path.join(results_dir, "stage2_verifier_bagging_preds.json")
     output_bagging_odds_file = os.path.join(results_dir, "stage2_verifier_bagging_odds.json")
@@ -258,67 +259,67 @@ def main():
     os.system(xargs)
 
     predict_batch_size = 32
-    # "gs://squad_cx/my_ensemble_models/qa_models/1_electra_large_32_480_5e-05_2_1"
-    eval_a_model("gs://squad_cx/args_train_models/1_electra_large_32_480_5e-05_2_1",
-                 "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_384_5e-05_2_2",
-    #              "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_480_5e-05_2_2",
-    #              "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size, tpu_address)
-    # "gs://squad_cx/my_ensemble_models/qa_models/squad_model_1"
-    # eval_a_model("gs://squad_cx/electra_data/models/finetuning_models_atrlp/squad_model_1", "atrlp_models_1", "electra", 512,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_9", "atrlp_models_9", "electra", 512,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3.0000000000000004e-05_2_3",
-    #              "lr_epoch_models_3.0000000000000004e-05_2_3", "electra", 512, predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/6e-05_2_1", "lr_epoch_models_6e-05_2_1", "electra", 512,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/6e-05_3_1", "lr_epoch_models_6e-05_3_1", "electra", 512,
-    #              predict_batch_size, tpu_address)
-    # "gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v1_32_384_2e-05_2_0"
-    # eval_a_model("gs://squad_cx/all_ensemble_models/albert_args_train_models/2_albert_xxlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xxlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    #
-    # stage1_qa_bagging(args.input_file)
-    # build_pv_data(args.input_file)
-    #
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/1_albert_xlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_electra_large_24_480_3e-05_2_0",
-    #              "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size,
-    #              tpu_address)
-    #
-    # stage2_answer_verifier_step_one(args.input_file)
-    #
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
-    #              "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
-    #              tpu_address)
-    #
-    # stage2_answer_verifier_step_two(args.input_file)
-    #
-    # xargs = f"gsutil -m cp -r results gs://squad_cx"
-    # os.system(xargs)
+    # # "gs://squad_cx/my_ensemble_models/qa_models/1_electra_large_32_480_5e-05_2_1"
+    # eval_a_model("gs://squad_cx/args_train_models/1_electra_large_32_480_5e-05_2_1",
+    #              "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size, tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_384_5e-05_2_2",
+    # #              "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size, tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_480_5e-05_2_2",
+    # #              "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size, tpu_address)
+    # # "gs://squad_cx/my_ensemble_models/qa_models/squad_model_1"
+    # # eval_a_model("gs://squad_cx/electra_data/models/finetuning_models_atrlp/squad_model_1", "atrlp_models_1", "electra", 512,
+    # #              predict_batch_size, tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_9", "atrlp_models_9", "electra", 512,
+    # #              predict_batch_size, tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3.0000000000000004e-05_2_3",
+    # #              "lr_epoch_models_3.0000000000000004e-05_2_3", "electra", 512, predict_batch_size, tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/6e-05_2_1", "lr_epoch_models_6e-05_2_1", "electra", 512,
+    # #              predict_batch_size, tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/6e-05_3_1", "lr_epoch_models_6e-05_3_1", "electra", 512,
+    # #              predict_batch_size, tpu_address)
+    # # "gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v1_32_384_2e-05_2_0"
+    # # eval_a_model("gs://squad_cx/all_ensemble_models/albert_args_train_models/2_albert_xxlarge_v1_32_384_2e-05_2_0",
+    # #              "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+    # #              tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
+    # #              "albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+    # #              tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xlarge_v2_32_384_2e-05_2_0",
+    # #              "albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+    # #              tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xxlarge_v1_32_384_2e-05_2_0",
+    # #              "albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+    # #              tpu_address)
+    # # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
+    # #              "albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
+    # #              tpu_address)
+    # #
+    stage1_qa_bagging(args.input_file)
+    build_pv_data(args.input_file)
+
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/1_albert_xlarge_v1_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size, tpu_address)
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size, tpu_address)
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size, tpu_address)
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_electra_large_24_480_3e-05_2_0",
+                 "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size,
+                 tpu_address)
+
+    stage2_answer_verifier_step_one(args.input_file)
+
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
+                 "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
+                 tpu_address)
+
+    stage2_answer_verifier_step_two(args.input_file)
+
+    xargs = f"gsutil -m cp -r results gs://squad_cx"
+    os.system(xargs)
 
 
 if __name__ == '__main__':
