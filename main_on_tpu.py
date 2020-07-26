@@ -128,8 +128,8 @@ def stage1_qa_bagging(input_file):
     json.dump(bagging_preds, open(output_bagging_preds_file, 'w', encoding='utf-8'))
     json.dump(bagging_odds, open(output_bagging_odds_file, 'w', encoding='utf-8'))
 
-    xargs = f"python eval.py {input_file} {output_bagging_preds_file} --na-prob-file {output_bagging_odds_file} -o {output_bagging_eval_file}"
-    os.system(xargs)
+    # xargs = f"python eval.py {input_file} {output_bagging_preds_file} --na-prob-file {output_bagging_odds_file} -o {output_bagging_eval_file}"
+    # os.system(xargs)
 
 
 def build_pv_data(input_file):
@@ -182,7 +182,7 @@ def stage2_answer_verifier_step_one(input_file):
 
     for qid in stage1_qa_bagging_preds:
         bagging_preds[qid] = stage1_qa_bagging_preds[qid]
-        if stage1_qa_bagging_odds[qid] > stage1_qa_bagging_eval['best_exact_thresh']:
+        if stage1_qa_bagging_odds[qid] > -1.8903327217468848:
             bagging_preds[qid] = ""
         bagging_odds[qid] = np.mean([odds[qid] for odds in all_odds])
 
@@ -195,8 +195,8 @@ def stage2_answer_verifier_step_one(input_file):
     json.dump(bagging_preds, open(output_bagging_preds_file, 'w', encoding='utf-8'))
     json.dump(bagging_odds, open(output_bagging_odds_file, 'w', encoding='utf-8'))
 
-    xargs = f"python eval.py {input_file} {output_bagging_preds_file} --na-prob-file {output_bagging_odds_file} -o {output_bagging_eval_file}"
-    os.system(xargs)
+    # xargs = f"python eval.py {input_file} {output_bagging_preds_file} --na-prob-file {output_bagging_odds_file} -o {output_bagging_eval_file}"
+    # os.system(xargs)
 
 
 def stage2_answer_verifier_step_two(input_file):
@@ -224,9 +224,11 @@ def stage2_answer_verifier_step_two(input_file):
 
     for qid in stage2_step_one_bagging_preds:
         bagging_preds[qid] = stage2_step_one_bagging_preds[qid]
-        if stage2_step_one_bagging_odds[qid] > stage2_step_one_bagging_eval['best_exact_thresh']:
+        if stage2_step_one_bagging_odds[qid] > -0.060682862997055054:
             bagging_preds[qid] = ""
         bagging_odds[qid] = np.mean([odds[qid] for odds in all_odds])
+        if bagging_odds[qid] > 7.326700687408447:
+            bagging_preds[qid] = ""
 
     remove_sub_model_dir(results_dir)
 
@@ -237,7 +239,7 @@ def stage2_answer_verifier_step_two(input_file):
     json.dump(bagging_preds, open(output_bagging_preds_file, 'w', encoding='utf-8'))
     json.dump(bagging_odds, open(output_bagging_odds_file, 'w', encoding='utf-8'))
 
-    xargs = f"python eval.py {input_file} {output_bagging_preds_file} --na-prob-file {output_bagging_odds_file} -o {output_bagging_eval_file}"
+    xargs = f"python eval.py {input_file} {output_bagging_preds_file} "  # --na-prob-file {output_bagging_odds_file} -o {output_bagging_eval_file}"
     os.system(xargs)
 
 
