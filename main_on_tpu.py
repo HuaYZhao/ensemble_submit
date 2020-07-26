@@ -258,7 +258,7 @@ def main():
     xargs = f"gsutil cp {args.input_file} gs://squad_cx/electra_data/finetuning_data/squad/dev.json"
     os.system(xargs)
 
-    predict_batch_size = 32
+    predict_batch_size = 16
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/1_electra_large_32_480_5e-05_2_1",
                  "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size, tpu_address)
     eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_384_5e-05_2_2",
