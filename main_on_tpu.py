@@ -294,7 +294,7 @@ def main():
     #              tpu_address)
     #
     # stage1_qa_bagging(args.input_file)
-    # build_pv_data(args.input_file)
+    build_pv_data(args.input_file)
     #
     # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/1_albert_xlarge_v1_32_384_2e-05_2_0",
     #              "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
