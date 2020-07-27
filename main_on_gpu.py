@@ -38,18 +38,20 @@ MODEL_MAP = {
 def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_size):
     run_dir = MODEL_MAP[model_name]
     if model_type == "albert":
-        xargs = f"gsutil -m cp -r {model_dir} gs://squad_cx/albert_data/pretrain_models/{model_name}"
+        os.makedirs(f"albert_data/pretrain_models/{model_name}")
+
+        xargs = f"unzip -j {model_dir} -d albert_data/pretrain_models/{model_name}"
         os.system(xargs)
 
         config_file = "../xxlarge_albert_config.json" if "xxlarge" in model_name else "../xlarge_albert_config.json"
         output_dir = f"results/{model_name}"
         os.makedirs(output_dir, exist_ok=True)
-        predict_file = f"gs://squad_cx/albert_data/inputs/dev.json"
-        predict_feature_file = f"gs://squad_cx/albert_data/features/predict_features_{max_seq_len}_128_64"
-        predict_feature_left_file = f"gs://squad_cx/albert_data/features/predict_features_left_{max_seq_len}_128_64"
-        init_checkpoint = f"gs://squad_cx/albert_data/pretrain_models/{model_name}/model.ckpt-best"
-        spm_model_file = f"gs://squad_cx/albert_data/pretrain_models/{model_name}/30k-clean.model"
-        xargs = f"gsutil cp {spm_model_file} {run_dir}"
+        predict_file = f"../albert_data/inputs/dev.json"
+        predict_feature_file = f"../albert_data/features/predict_features_{max_seq_len}_128_64"
+        predict_feature_left_file = f"../albert_data/features/predict_features_left_{max_seq_len}_128_64"
+        init_checkpoint = f"../albert_data/pretrain_models/{model_name}/model.ckpt-best"
+        spm_model_file = f"albert_data/pretrain_models/{model_name}/30k-clean.model"
+        xargs = f"cp {spm_model_file} {run_dir}"
         os.system(xargs)
 
         xargs = f""" cd {run_dir} && \
@@ -76,18 +78,22 @@ def eval_a_model(model_dir, model_name, model_type, max_seq_len, predict_batch_s
         if os.path.exists(os.path.join(output_dir, "null_odds.json")):
             shutil.move(os.path.join(output_dir, "null_odds.json"), os.path.join(output_dir, "squad_null_odds.json"))
 
+        remove_sub_model_dir("albert_data/pretrain_models")
+
     elif model_type == "electra":
-        xargs = f"unzip {model_dir} -d electra_data/models"
+        os.makedirs(f"electra_data/models/{model_name}")
+
+        xargs = f"unzip -j {model_dir} -d electra_data/models/{model_name}"
         os.system(xargs)
 
-        xargs = f"""cd {run_dir} && python run_finetuning.py   --data-dir=electra_data/models --model-name={model_name}  --hparams '{{"model_size": "large", "task_names": ["squad"], "num_train_epochs": 2, "use_tpu": false, "num_tpu_cores": 8, "train_batch_size": 32, "eval_batch_size": {predict_batch_size}, "predict_batch_size": {predict_batch_size}, "max_seq_length": {max_seq_len}, "use_tfrecords_if_existing": false, "num_trials": 1, "do_train": false, "do_eval": true, "save_checkpoints_steps": 100000 }}' """
+        xargs = f"""cd {run_dir} && python run_finetuning.py   --data-dir=../electra_data --model-name={model_name}  --hparams '{{"model_size": "large", "task_names": ["squad"], "num_train_epochs": 2, "use_tpu": false, "num_tpu_cores": 8, "train_batch_size": 32, "eval_batch_size": {predict_batch_size}, "predict_batch_size": {predict_batch_size}, "max_seq_length": {max_seq_len}, "use_tfrecords_if_existing": false, "num_trials": 1, "do_train": false, "do_eval": true, "save_checkpoints_steps": 100000 }}' """
         os.system(xargs)
 
         os.makedirs(f"./results/{model_name}", exist_ok=True)
         xargs = f"cp -r electra_data/models/{model_name}/results/squad_qa/* ./results/{model_name}"
         os.system(xargs)
 
-        # shutil.rmtree()
+        remove_sub_model_dir("electra_data/models")
     else:
         raise
 
@@ -151,7 +157,7 @@ def build_pv_data(input_file):
 
     json.dump(dev, open(output_pv_data_file, 'w', encoding='utf-8'))
     print("generate pv data finished !")
-    xargs = f"gsutil cp {output_pv_data_file} gs://squad_cx/electra_data/finetuning_data/squad/dev.json"
+    xargs = f"gsutil cp {output_pv_data_file} electra_data/finetuning_data/squad/dev.json"
     os.system(xargs)
 
     print("update electra pv data !")
@@ -263,62 +269,48 @@ def main():
     predict_batch_size = 16
     eval_a_model("../args_train_models_1_electra_large_32_480_5e-05_2_1",
                  "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_384_5e-05_2_2",
-    #              "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_electra_large_32_480_5e-05_2_2",
-    #              "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_1", "atrlp_models_1", "electra", 512,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/squad_model_9", "atrlp_models_9", "electra", 512,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3.0000000000000004e-05_2_3",
-    #              "lr_epoch_models_3.0000000000000004e-05_2_3", "electra", 512, predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/6e-05_2_1", "lr_epoch_models_6e-05_2_1", "electra", 512,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/6e-05_3_1", "lr_epoch_models_6e-05_3_1", "electra", 512,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xxlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/qa_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size,
-    #              tpu_address)
-    #
-    # stage1_qa_bagging(args.input_file)
-    # build_pv_data(args.input_file)
-    #
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/1_albert_xlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size, tpu_address)
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_electra_large_24_480_3e-05_2_0",
-    #              "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size,
-    #              tpu_address)
-    #
-    # stage2_answer_verifier_step_one(args.input_file)
-    #
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
-    #              "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
-    #              tpu_address)
-    #
-    # stage2_answer_verifier_step_two(args.input_file)
-    #
-    # xargs = f"gsutil -m cp -r results gs://squad_cx"
-    # os.system(xargs)
+    eval_a_model("../args_train_models_2_electra_large_32_384_5e-05_2_2",
+                 "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size)
+    eval_a_model("../args_train_models_2_electra_large_32_480_5e-05_2_2",
+                 "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size)
+    eval_a_model("../atrlp_models_1", "atrlp_models_1", "electra", 512, predict_batch_size)
+    eval_a_model("../atrlp_models_9", "atrlp_models_9", "electra", 512, predict_batch_size)
+    eval_a_model("../lr_epoch_models_3.0000000000000004e-05_2_3", "lr_epoch_models_3.0000000000000004e-05_2_3",
+                 "electra", 512, predict_batch_size)
+    eval_a_model("../lr_epoch_models_6e-05_2_1", "lr_epoch_models_6e-05_2_1", "electra", 512, predict_batch_size)
+    eval_a_model("../lr_epoch_models_6e-05_3_1", "lr_epoch_models_6e-05_3_1", "electra", 512, predict_batch_size)
+    eval_a_model("../albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0",
+                 "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+    eval_a_model("../albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+    eval_a_model("../albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+    eval_a_model("../albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0",
+                 "albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+    eval_a_model("../albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+
+    stage1_qa_bagging(args.input_file)
+    build_pv_data(args.input_file)
+
+    eval_a_model("../albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size)
+    eval_a_model("../albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size)
+    eval_a_model("../albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size)
+    eval_a_model("../args_train_pv_models_3_electra_large_24_480_3e-05_2_0",
+                 "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size)
+
+    stage2_answer_verifier_step_one(args.input_file)
+
+    eval_a_model("../args_train_pv_models_2_electra_large_32_512_5e-05_2_0",
+                 "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size)
+
+    stage2_answer_verifier_step_two(args.input_file, args.output_file)
 
 
 if __name__ == '__main__':
