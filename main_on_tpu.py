@@ -296,29 +296,29 @@ def main():
     # stage1_qa_bagging(args.input_file)
     build_pv_data(args.input_file)
 
-    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/1_albert_xlarge_v1_32_384_2e-05_2_0",
-                 "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
-                 predict_batch_size, tpu_address)
-    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
-                 "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-                 predict_batch_size, tpu_address)
-    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
-                 "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-                 predict_batch_size, tpu_address)
-    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_electra_large_24_480_3e-05_2_0",
-                 "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size,
-                 tpu_address)
-
-    stage2_answer_verifier_step_one(args.input_file)
-
-    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
-    #              "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
+    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/1_albert_xlarge_v1_32_384_2e-05_2_0",
+    #              "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
+    #              predict_batch_size, tpu_address)
+    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_albert_xxlarge_v2_32_384_2e-05_2_0",
+    #              "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+    #              predict_batch_size, tpu_address)
+    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_albert_xxlarge_v2_32_384_2e-05_2_0",
+    #              "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+    #              predict_batch_size, tpu_address)
+    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/3_electra_large_24_480_3e-05_2_0",
+    #              "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size,
     #              tpu_address)
     #
-    # stage2_answer_verifier_step_two(args.input_file)
+    # stage2_answer_verifier_step_one(args.input_file)
+
+    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
+                 "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
+                 tpu_address)
+
+    stage2_answer_verifier_step_two(args.input_file)
     #
-    # xargs = f"gsutil -m cp -r results gs://squad_cx"
-    # os.system(xargs)
+    xargs = f"gsutil -m cp -r results gs://squad_cx"
+    os.system(xargs)
 
 
 if __name__ == '__main__':
