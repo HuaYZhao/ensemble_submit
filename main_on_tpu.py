@@ -150,7 +150,7 @@ def build_pv_data(input_file):
 
     json.dump(dev, open(output_pv_data_file, 'w', encoding='utf-8'))
     print("generate pv data finished !")
-    xargs = f"gsutil cp {output_pv_data_file} gs://squad_cx/electra_large/finetuning_data/squad/dev.json"
+    xargs = f"gsutil cp {output_pv_data_file} gs://squad_cx/electra_data/finetuning_data/squad/dev.json"
     os.system(xargs)
 
     print("update electra pv data !")
