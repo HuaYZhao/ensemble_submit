@@ -224,11 +224,11 @@ def stage2_answer_verifier_step_two(input_file):
 
     for qid in stage2_step_one_bagging_preds:
         bagging_preds[qid] = stage2_step_one_bagging_preds[qid]
-        if stage2_step_one_bagging_odds[qid] > -0.060682862997055054:
+        if stage2_step_one_bagging_odds[qid] > 1.0652853548526764:
             bagging_preds[qid] = ""
         bagging_odds[qid] = np.mean([odds[qid] for odds in all_odds])
-        if bagging_odds[qid] > 7.326700687408447:
-            bagging_preds[qid] = ""
+        # if bagging_odds[qid] > 7.326700687408447:
+        #     bagging_preds[qid] = ""
 
     # remove_sub_model_dir(results_dir)
 
