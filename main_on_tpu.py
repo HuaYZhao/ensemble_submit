@@ -311,14 +311,14 @@ def main():
 
     stage2_answer_verifier_step_one(args.input_file)
 
-    eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
-                 "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
-                 tpu_address)
-
-    stage2_answer_verifier_step_two(args.input_file)
-
-    xargs = f"gsutil -m cp -r results gs://squad_cx"
-    os.system(xargs)
+    # eval_a_model("gs://squad_cx/my_ensemble_models/answer_verifier_models/2_electra_large_32_512_5e-05_2_0",
+    #              "args_train_pv_models_2_electra_large_32_512_5e-05_2_0", "electra", 512, predict_batch_size,
+    #              tpu_address)
+    #
+    # stage2_answer_verifier_step_two(args.input_file)
+    #
+    # xargs = f"gsutil -m cp -r results gs://squad_cx"
+    # os.system(xargs)
 
 
 if __name__ == '__main__':
