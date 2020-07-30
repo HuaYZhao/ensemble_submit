@@ -189,7 +189,7 @@ def stage2_answer_verifier_step_one(input_file):
 
     for qid in stage1_qa_bagging_preds:
         bagging_preds[qid] = stage1_qa_bagging_preds[qid]
-        if stage1_qa_bagging_odds[qid] > -1.8903327217468848:
+        if stage1_qa_bagging_odds[qid] > -1.7580918570120747:
             bagging_preds[qid] = ""
         bagging_odds[qid] = np.mean([odds[qid] for odds in all_odds])
 
@@ -231,10 +231,10 @@ def stage2_answer_verifier_step_two(input_file, output_file):
 
     for qid in stage2_step_one_bagging_preds:
         bagging_preds[qid] = stage2_step_one_bagging_preds[qid]
-        if stage2_step_one_bagging_odds[qid] > 1.0652853548526764:
+        if stage2_step_one_bagging_odds[qid] > 1.071401908993721:
             bagging_preds[qid] = ""
         bagging_odds[qid] = np.mean([odds[qid] for odds in all_odds])
-        if bagging_odds[qid] > 7.413282871246338:
+        if bagging_odds[qid] > 7.402858257293701:
             bagging_preds[qid] = ""
 
     remove_sub_model_dir(results_dir)
@@ -270,41 +270,41 @@ def main():
     os.system(xargs)
 
     predict_batch_size = 16
-    # eval_a_model("../args_train_models_1_electra_large_32_480_5e-05_2_1",
-    #              "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size)
-    # eval_a_model("../args_train_models_2_electra_large_32_384_5e-05_2_2",
-    #              "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size)
-    # eval_a_model("../args_train_models_2_electra_large_32_480_5e-05_2_2",
-    #              "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size)
-    # eval_a_model("../atrlp_models_1", "atrlp_models_1", "electra", 512, predict_batch_size)
-    # eval_a_model("../atrlp_models_9", "atrlp_models_9", "electra", 512, predict_batch_size)
-    # eval_a_model("../lr_epoch_models_3.0000000000000004e-05_2_3", "lr_epoch_models_3.0000000000000004e-05_2_3",
-    #              "electra", 512, predict_batch_size)
-    # eval_a_model("../lr_epoch_models_6e-05_2_1", "lr_epoch_models_6e-05_2_1", "electra", 512, predict_batch_size)
-    # eval_a_model("../lr_epoch_models_6e-05_3_1", "lr_epoch_models_6e-05_3_1", "electra", 512, predict_batch_size)
-    # eval_a_model("../albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
-    # eval_a_model("../albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
-    # eval_a_model("../albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
-    # eval_a_model("../albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
-    # eval_a_model("../albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
-    #
-    # stage1_qa_bagging(args.input_file)
+    eval_a_model("../args_train_models_1_electra_large_32_480_5e-05_2_1",
+                 "args_train_models_1_electra_large_32_480_5e-05_2_1", "electra", 480, predict_batch_size)
+    eval_a_model("../args_train_models_2_electra_large_32_384_5e-05_2_2",
+                 "args_train_models_2_electra_large_32_384_5e-05_2_2", "electra", 384, predict_batch_size)
+    eval_a_model("../args_train_models_2_electra_large_32_480_5e-05_2_2",
+                 "args_train_models_2_electra_large_32_480_5e-05_2_2", "electra", 480, predict_batch_size)
+    eval_a_model("../atrlp_models_1", "atrlp_models_1", "electra", 512, predict_batch_size)
+    eval_a_model("../atrlp_models_9", "atrlp_models_9", "electra", 512, predict_batch_size)
+    eval_a_model("../lr_epoch_models_3.0000000000000004e-05_2_3", "lr_epoch_models_3.0000000000000004e-05_2_3",
+                 "electra", 512, predict_batch_size)
+    eval_a_model("../lr_epoch_models_6e-05_2_1", "lr_epoch_models_6e-05_2_1", "electra", 512, predict_batch_size)
+    eval_a_model("../lr_epoch_models_6e-05_3_1", "lr_epoch_models_6e-05_3_1", "electra", 512, predict_batch_size)
+    eval_a_model("../albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0",
+                 "albert_args_train_models_2_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+    eval_a_model("../albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+    eval_a_model("../albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_models_3_albert_xlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+    eval_a_model("../albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0",
+                 "albert_args_train_models_3_albert_xxlarge_v1_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+    eval_a_model("../albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384, predict_batch_size)
+
+    stage1_qa_bagging(args.input_file)
     build_pv_data(args.input_file)
 
-    # eval_a_model("../albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size)
-    # eval_a_model("../albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size)
-    # eval_a_model("../albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0",
-    #              "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
-    #              predict_batch_size)
+    eval_a_model("../albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_1_albert_xlarge_v1_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size)
+    eval_a_model("../albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_2_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size)
+    eval_a_model("../albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0",
+                 "albert_args_train_answer_models_3_albert_xxlarge_v2_32_384_2e-05_2_0", "albert", 384,
+                 predict_batch_size)
     eval_a_model("../args_train_pv_models_3_electra_large_24_480_3e-05_2_0",
                  "args_train_pv_models_3_electra_large_24_480_3e-05_2_0", "electra", 480, predict_batch_size)
 
